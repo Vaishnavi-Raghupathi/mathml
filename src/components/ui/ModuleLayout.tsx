@@ -1,80 +1,70 @@
-import { ComponentType, ReactNode } from 'react'
-import ChallengePrompt from './ChallengePrompt'
-import MLConnection from './MLConnection'
-import MathBlock from './MathBlock'
+import { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import NavBar from './NavBar'
 
 type ModuleLayoutProps = {
-  moduleNumber: number
-  title: string
-  description: string
-  Demo: ComponentType
-  stats: ReactNode
-  intuition: string
-  formalMath: Array<{ eq: string; annotation: string }>
-  challengePrompt: string
-  mlConnection: string
+  moduleNumber: string
+  moduleTitle: string
+  children: ReactNode
+  className?: string
 }
 
-const ModuleLayout = ({
-  moduleNumber,
-  title,
-  description,
-  Demo,
-  stats,
-  intuition,
-  formalMath,
-  challengePrompt,
-  mlConnection
-}: ModuleLayoutProps) => {
+const monoFont = '"IBM Plex Mono", monospace'
+
+const moduleSequence = [
+  { number: '01', name: 'Vectors', href: '/module/1' },
+  { number: '02', name: 'Dot Product', href: '/module/2' },
+  { number: '03', name: 'Matrices', href: '/module/3' }
+]
+
+const getNextModule = (moduleNumber: string) => {
+  const currentIndex = moduleSequence.findIndex((module) => module.number === moduleNumber)
+
+  if (currentIndex < 0 || currentIndex === moduleSequence.length - 1) {
+    return null
+  }
+
+  return moduleSequence[currentIndex + 1]
+}
+
+const ModuleLayout = ({ moduleNumber, moduleTitle, children, className = '' }: ModuleLayoutProps) => {
+  const nextModule = getNextModule(moduleNumber)
+
   return (
-    <div className="min-h-screen w-full bg-background text-text-primary">
+    <div className={`app-ui-system min-h-screen bg-background text-text-primary ${className}`}>
       <NavBar />
 
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-6">
-        <section className="rounded-xl bg-card p-6">
-          <div className="mb-3 inline-flex items-center gap-3">
-            <span className="rounded-full bg-accent-purple px-3 py-1 text-sm font-semibold text-white">
-              {String(moduleNumber).padStart(2, '0')}
-            </span>
-            <span className="rounded-full border border-accent-cyan/40 px-3 py-1 text-xs uppercase tracking-wide text-accent-cyan">
-              Linear Algebra
-            </span>
-          </div>
-          <h1 className="text-3xl font-bold">{title}</h1>
-          <p className="mt-2 text-text-secondary">{description}</p>
-        </section>
+      <main className="mx-auto w-full max-w-[680px] px-4 pb-16 pt-20 sm:px-8 sm:pb-20">
+        <header className="mb-10 pt-6 sm:mb-12 sm:pt-10">
+          <p
+            className="mb-3 max-w-none text-left uppercase"
+            style={{
+              fontFamily: 'IBM Plex Sans, system-ui, -apple-system, sans-serif',
+              fontSize: '11px',
+              fontWeight: 500,
+              letterSpacing: '1.5px',
+              color: '#4f5f7b'
+            }}
+          >
+            Module {moduleNumber}
+          </p>
+          <h1>{moduleTitle}</h1>
+          <hr className="mt-8 border-0 border-t border-border" />
+        </header>
 
-        <section className="grid gap-6 lg:grid-cols-5">
-          <div className="rounded-xl bg-card p-6 lg:col-span-3">
-            <Demo />
-          </div>
-          <aside className="rounded-xl bg-card p-6 lg:col-span-2">{stats}</aside>
-        </section>
+        <section>{children}</section>
 
-        <section className="rounded-xl bg-card p-6">
-          <h2 className="text-2xl font-semibold">The Intuition</h2>
-          <p className="mt-3 text-text-secondary">{intuition}</p>
-        </section>
-
-        <section className="rounded-xl bg-card p-6">
-          <h2 className="text-2xl font-semibold">The Math</h2>
-          <div className="mt-4 space-y-4">
-            {formalMath.map((item, index) => (
-              <div key={`${item.eq}-${index}`} className="rounded-lg bg-background/60 p-4">
-                <MathBlock math={item.eq} display />
-                <p className="mt-2 text-text-secondary">{item.annotation}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <ChallengePrompt prompt={challengePrompt} />
-        <MLConnection text={mlConnection} />
-
-        <div className="rounded-xl border border-text-secondary/20 p-4 text-text-secondary">
-          Next module CTA placeholder
-        </div>
+        {nextModule ? (
+          <footer className="mt-16 pb-6">
+            <Link
+              to={nextModule.href}
+              className="text-[13px] text-text-muted no-underline transition-colors duration-150 hover:text-text-primary"
+              style={{ fontFamily: monoFont }}
+            >
+              Next: {nextModule.name} →
+            </Link>
+          </footer>
+        ) : null}
       </main>
     </div>
   )

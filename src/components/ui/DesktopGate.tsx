@@ -1,33 +1,16 @@
-import { ReactNode, useEffect, useState } from 'react'
+const monoFont = '"IBM Plex Mono", monospace'
 
-type DesktopGateProps = {
-  children: ReactNode
-}
-
-const DesktopGate = ({ children }: DesktopGateProps) => {
-  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024)
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 1024)
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  if (!isDesktop) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-6 text-center text-text-primary">
-        <p className="max-w-lg text-lg">
-          This experience requires a desktop or laptop. Please visit on a larger
-          screen.
+const DesktopGate = () => {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-6 text-center">
+      <div>
+        <p className="mb-4 text-xl text-text-secondary">MathML requires a desktop or laptop browser.</p>
+        <p className="text-[13px] text-text-muted" style={{ fontFamily: monoFont }}>
+          Please visit on a screen wider than 1024px.
         </p>
       </div>
-    )
-  }
-
-  return <>{children}</>
+    </div>
+  )
 }
 
 export default DesktopGate

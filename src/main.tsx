@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
+import { MotionConfig } from 'framer-motion'
 import 'katex/dist/katex.min.css'
 import './styles/globals.css'
 import App from './App'
@@ -8,7 +9,9 @@ import App from './App'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <MotionConfig reducedMotion="always">
+        <App />
+      </MotionConfig>
     </BrowserRouter>
   </React.StrictMode>
 )
